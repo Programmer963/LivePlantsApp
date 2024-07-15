@@ -1,7 +1,16 @@
-import { Link } from "@react-navigation/native";
 import { View, StyleSheet, Text, ImageBackground, TextInput, TouchableOpacity, Pressable } from "react-native";
+import PasswordInput from "../components/ui/PasswordInput";
+import { useState } from "react";
 
-export default function Login() {
+export default function Login({navigation}: any) {
+    const [passwordText, setPasswordText] = useState('');
+
+    const handleLogin = () => {
+        if (passwordText === '123123') {
+            navigation.navigate('Home');
+        }
+    }
+
     return (
         <ImageBackground
             source={{ uri: 'https://cdn1.ozonusercontent.com/s3/club-storage/images/article_image_752x940/858/c500/4d0ca2ab-9a5f-4c6e-b94e-8fe0766f7882.jpeg' }}
@@ -15,17 +24,22 @@ export default function Login() {
                     placeholderTextColor="#8AA47C"
                     keyboardType="email-address"
                 />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    placeholderTextColor="#8AA47C"
-                    secureTextEntry={true}
+                <PasswordInput 
+                    placeholder="Password" 
+                    value={passwordText}
+                    onChangeText={setPasswordText}
                 />
-                <Pressable style={styles.button}>
+                <Pressable 
+                    style={styles.button}
+                    onPress={handleLogin}
+                >
                     <Text style={styles.buttonText}>Login</Text>
                 </Pressable>
-                <Pressable>
+                <Pressable onPress={() => {navigation.navigate("ResetPassword")}}>
                     <Text style={styles.link}>Forgot Password?</Text>
+                </Pressable>
+                <Pressable onPress={() => {navigation.navigate("Register")}}>
+                    <Text style={styles.link}>No Account?</Text>
                 </Pressable>
             </View>
         </ImageBackground>
@@ -74,7 +88,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
+        marginVertical: 15,
     },
     buttonText: {
         color: '#FFF',
