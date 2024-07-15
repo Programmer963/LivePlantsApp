@@ -1,7 +1,7 @@
-import { View, StyleSheet, Text, ImageBackground, TextInput, TouchableOpacity, Pressable } from "react-native";
+import { View, StyleSheet, Text, ImageBackground, TextInput, Pressable } from "react-native";
 import PasswordInput from "../components/ui/PasswordInput";
 import { useState } from "react";
-
+import { loginBackground } from '../assets/index'
 
 export default function Register() {
     const [passwordText, setPasswordText] = useState('');
@@ -9,7 +9,7 @@ export default function Register() {
 
     return (
         <ImageBackground
-            source={{ uri: 'https://cdn1.ozonusercontent.com/s3/club-storage/images/article_image_752x940/858/c500/4d0ca2ab-9a5f-4c6e-b94e-8fe0766f7882.jpeg' }}
+            source={{ uri: loginBackground }}
             style={styles.background}
         >
             <View style={styles.container}> 
