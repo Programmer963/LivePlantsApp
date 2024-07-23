@@ -1,22 +1,41 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
+import Login from './src/pages/Login';
+import Register from './src/pages/Register';
+import Home from './src/pages/Home';
+import Detail from './src/pages/Detail';
+import { AuthProvider, useAuth } from './src/context/AppContext';
 
 const RootStack = createNativeStackNavigator();
 
-export default function App() {
+
+function AppNavigator() {
+  const { isLoggedIn } = useAuth();
+
   return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Group>
+    <RootStack.Navigator>
+      <RootStack.Group>
+      {isLoggedIn ? (
+        <>
+          <RootStack.Screen          
+            name="Home"
+            component={Home}
+            options={({navigation}) => ({})}
+          />
+          <RootStack.Screen          
+            name="Detail"
+            component={Detail}
+            options={({navigation}) => ({})}
+          />
+        </>
+      ) : (
+        <>
           <RootStack.Screen          
             name="Login"
             component={Login}
             options={({navigation}) => ({
-                headerShown: false
+              headerShown: false
             })}
           />
           <RootStack.Screen          
@@ -24,16 +43,23 @@ export default function App() {
             component={Register}
             options={({navigation}) => ({
               headerShown: false
-              })}
+            })}
           />
-          <RootStack.Screen          
-            name="Home"
-            component={Home}
-            options={({navigation}) => ({})}
-          />
-        </RootStack.Group>
-      </RootStack.Navigator>
-    </NavigationContainer>
+        </>
+      )}
+      </RootStack.Group>
+    </RootStack.Navigator>
+  );
+}
+
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <AppNavigator/>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 

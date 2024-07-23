@@ -1,14 +1,30 @@
-import { View, StyleSheet, Text, ImageBackground, TextInput, TouchableOpacity, Pressable } from "react-native";
-import PasswordInput from "../components/ui/PasswordInput";
 import { useState } from "react";
-import { loginBackground } from '../assets/index'
+import { 
+    View, 
+    StyleSheet, 
+    Text, 
+    ImageBackground, 
+    TextInput, 
+    Pressable 
+} from "react-native";
+
+import PasswordInput from "../components/PasswordInput";
+
+import { useAuth } from "../context/AppContext";
+import { loginBackground } from '../assets'
 
 export default function Login({navigation}: any) {
-    const [passwordText, setPasswordText] = useState('');
+    const [email, setEmail] = useState('aba@mail.ru');
+    const [password, setPassword] = useState('123');
+    const { login } = useAuth()
 
-    const handleLogin = () => {
-        if (passwordText === '123123') {
-            navigation.navigate('Home');
+    const handleLogin = async () => {
+        try {
+            await login(email, password)
+            navigation.navigate('Home')
+        }
+        catch (error) {
+            console.error(error);
         }
     }
 
@@ -22,13 +38,15 @@ export default function Login({navigation}: any) {
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
                     placeholderTextColor="#8AA47C"
                     keyboardType="email-address"
                 />
                 <PasswordInput 
                     placeholder="Password" 
-                    value={passwordText}
-                    onChangeText={setPasswordText}
+                    value={password}
+                    onChangeText={setPassword}
                 />
                 <Pressable 
                     style={styles.button}
@@ -36,9 +54,9 @@ export default function Login({navigation}: any) {
                 >
                     <Text style={styles.buttonText}>Login</Text>
                 </Pressable>
-                <Pressable onPress={() => {navigation.navigate("ResetPassword")}}>
+                {/* <Pressable onPress={() => {navigation.navigate("ResetPassword")}}>
                     <Text style={styles.link}>Forgot Password?</Text>
-                </Pressable>
+                </Pressable> */}
                 <Pressable onPress={() => {navigation.navigate("Register")}}>
                     <Text style={styles.link}>No Account?</Text>
                 </Pressable>

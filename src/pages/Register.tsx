@@ -1,7 +1,7 @@
 import { View, StyleSheet, Text, ImageBackground, TextInput, Pressable } from "react-native";
-import PasswordInput from "../components/ui/PasswordInput";
+import PasswordInput from "../components/PasswordInput";
 import { useState } from "react";
-import { loginBackground } from '../assets/index'
+import { loginBackground } from '../assets'
 
 export default function Register() {
     const [passwordText, setPasswordText] = useState('');
