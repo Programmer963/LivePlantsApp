@@ -44,8 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             await AsyncStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
             setIsLoggedIn(true);
-        }
-        else {
+        } else {
             alert('Wrong Password!')
         }
     } catch (error) {

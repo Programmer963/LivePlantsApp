@@ -1,3 +1,4 @@
+import React from "react";
 import { View, StyleSheet, Text, ImageBackground, TextInput, Pressable } from "react-native";
 import PasswordInput from "../components/PasswordInput";
 import { useState } from "react";

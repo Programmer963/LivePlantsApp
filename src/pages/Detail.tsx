@@ -3,6 +3,7 @@ import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable } fr
 import * as ImagePicker from 'expo-image-picker';
 import { loginBackground } from '../assets';
 import { defaultPlantIcon } from '../assets';
+import { t } from 'i18next';
 
 export default function Detail({ route }: any) {
   const { item } = route.params;
@@ -32,11 +33,11 @@ export default function Detail({ route }: any) {
           <Pressable onPress={pickImage} style={styles.uploadButton}>
           </Pressable>
         </View>
-        <Text style={styles.title}>{item.name}</Text>
+        <Text style={styles.title}>{t(item.name)}</Text>
       </View>
       <View style={styles.detailsContainer}>
-        <Text style={styles.detailsTitle}>Details:</Text>
-        <Text style={styles.details}>{item.details}</Text>
+        <Text style={styles.detailsTitle}>{t('Details')}:</Text>
+        <Text style={styles.details}>{t(item.details)}</Text>
       </View>
     </View>
   );

@@ -10,8 +10,9 @@ import {
 
 import PasswordInput from "../components/PasswordInput";
 
-import { useAuth } from "../context/AppContext";
+import { useAuth } from "../context/AuthContext";
 import { loginBackground } from '../assets'
+import React from "react";
 
 export default function Login({navigation}: any) {
     const [email, setEmail] = useState('aba@mail.ru');

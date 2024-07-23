@@ -1,3 +1,4 @@
+import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View, StyleSheet, TextInput, Pressable } from "react-native";
