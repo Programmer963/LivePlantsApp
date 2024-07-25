@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const URL_API = 'http://localhost/api/public/plant';
 
@@ -18,6 +17,7 @@ type Plant = {
 
 type PlantsContextType = {
   plants: Plant[];
+  filteredPlants: Plant[];
   getPlants: (userId: number) => Promise<void>;
   searchPlants: (searchQuery: string) => void;
   sortPlants: () => void;
@@ -29,34 +29,33 @@ type PlantsContextType = {
 const PlantsContext = createContext<PlantsContextType | undefined>(undefined);
 
 export const PlantsProvider = ({ children }: { children: ReactNode }) => {
-  
   const [plants, setPlants] = useState<Plant[]>([]);
+  const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]); 
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-        getPlants(user.id);
+      getPlants(user.id);
     }
-  }, [user])
+  }, [user]);
 
   const searchPlants = (searchQuery: string) => {
     const filteredData = plants.filter(plant =>
       plant.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setPlants(filteredData);
-    console.log(plants)
+    setFilteredPlants(filteredData);
   };
 
   const sortPlants = () => {
-    const sortedData = [...plants].sort((a, b) => a.name.localeCompare(b.name));
-    setPlants(sortedData);
+    const sortedData = [...filteredPlants].sort((a, b) => a.name.localeCompare(b.name));
+    setFilteredPlants(sortedData);
   };
-
 
   const getPlants = async (userId: number) => {
     try {
       const response = await axios.get(`${URL_API}/getPlantsByUserId/${userId}`);
       setPlants(response.data);
+      setFilteredPlants(response.data);
     } catch (error) {
       console.error('Failed to get plants', error);
     }
@@ -73,9 +72,10 @@ export const PlantsProvider = ({ children }: { children: ReactNode }) => {
         lastWateredDate: plant.lastWateredDate ?? '',
         nextWateringDate: plant.nextWateringDate ?? ''
       });
-      
+
       const response = await axios.post(`${URL_API}/add?${params.toString()}`);
       setPlants([...plants, response.data]);
+      setFilteredPlants([...filteredPlants, response.data]);
     } catch (error) {
       console.error('Failed to add plant', error);
     }
@@ -85,22 +85,24 @@ export const PlantsProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await axios.put(`${URL_API}/edit/${plant.id}`, plant);
       setPlants(plants.map(p => (p.id === plant.id ? response.data : p)));
+      setFilteredPlants(filteredPlants.map(p => (p.id === plant.id ? response.data : p)));
     } catch (error) {
       console.error('Failed to update plant', error);
     }
   };
 
-  const deletePlant = async (plantId: number) => {
+  const deletePlant = async (id: number) => {
     try {
-      await axios.delete(`${URL_API}/delete/${plantId}`);
-      setPlants(plants.filter(p => p.id !== plantId));
+      await axios.delete(`${URL_API}/delete/${id}`);
+      setPlants(plants.filter(p => p.id !== id));
+      setFilteredPlants(filteredPlants.filter(p => p.id !== id));
     } catch (error) {
       console.error('Failed to delete plant', error);
     }
   };
 
   return (
-    <PlantsContext.Provider value={{ plants, getPlants, searchPlants, sortPlants, addPlant, updatePlant, deletePlant }}>
+    <PlantsContext.Provider value={{ plants, filteredPlants, getPlants, searchPlants, sortPlants, addPlant, updatePlant, deletePlant }}>
       {children}
     </PlantsContext.Provider>
   );

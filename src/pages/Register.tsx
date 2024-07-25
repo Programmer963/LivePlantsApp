@@ -1,12 +1,47 @@
 import React from "react";
-import { View, StyleSheet, Text, ImageBackground, TextInput, Pressable } from "react-native";
+import { View, StyleSheet, Text, ImageBackground, TextInput, Pressable, Alert } from "react-native";
 import PasswordInput from "../components/PasswordInput";
 import { useState } from "react";
 import { loginBackground } from '../assets'
+import { useAuth } from "../context/AuthContext";
 
-export default function Register() {
-    const [passwordText, setPasswordText] = useState('');
-    const [confirmPasswordText, setConfirmPasswordText] = useState('');
+export default function Register({ navigation }: any) {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const { register } = useAuth();
+
+    const validateEmail = (email: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email.toLowerCase());
+    }
+
+    const handleRegister = () => {
+        console.log('register')
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
+            Alert.alert('Ошибка', 'Все поля обязательны для заполнения.');
+            return;
+        }
+        if (!validateEmail(email)) {
+            Alert.alert('Ошибка', 'Неверный формат электронной почты.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            Alert.alert('Ошибка', 'Пароли не совпадают.');
+            return;
+        }
+        if (password.length < 6) {
+            Alert.alert('Ошибка', 'Пароль должен содержать не менее 6 символов.');
+            return;
+        }
+
+        register({ firstName, lastName, email, password })
+            .then(() => navigation.navigate('Login'))
+            .catch(error => Alert.alert('Ошибка', 'Не удалось зарегистрироваться. Попробуйте снова.'));
+    }
 
     return (
         <ImageBackground
@@ -17,19 +52,33 @@ export default function Register() {
                 <Text style={styles.title}>Registration</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Full Name"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    placeholder="First Name"
                     placeholderTextColor="#8AA47C"
                 />
                 <TextInput
                     style={styles.input}
+                    value={lastName}
+                    onChangeText={setLastName}
+                    placeholder="Last Name"
+                    placeholderTextColor="#8AA47C"
+                />
+                <TextInput
+                    style={styles.input}
+                    value={email}
+                    onChangeText={setEmail}
                     placeholder="Email"
                     placeholderTextColor="#8AA47C"
                     keyboardType="email-address"
                 />
-                <PasswordInput placeholder={'Password'} value={passwordText} onChangeText={setPasswordText}/>
-                <PasswordInput placeholder={'Confirm password'} value={confirmPasswordText} onChangeText={setConfirmPasswordText}/>
-                <Pressable style={styles.button}>
+                <PasswordInput placeholder={'Password'} value={password} onChangeText={setPassword}/>
+                <PasswordInput placeholder={'Confirm password'} value={confirmPassword} onChangeText={setConfirmPassword}/>
+                <Pressable style={styles.button} onPress={handleRegister}>
                     <Text style={styles.buttonText}>Register</Text>
+                </Pressable>
+                <Pressable onPress={() => {navigation.navigate("Login")}}>
+                    <Text style={styles.link}>Go back</Text>
                 </Pressable>
             </View>
         </ImageBackground>

@@ -5,7 +5,8 @@ import {
     Text, 
     ImageBackground, 
     TextInput, 
-    Pressable 
+    Pressable, 
+    Alert
 } from "react-native";
 
 import PasswordInput from "../components/PasswordInput";
@@ -19,14 +20,20 @@ export default function Login({navigation}: any) {
     const [password, setPassword] = useState('123');
     const { login } = useAuth()
 
-    const handleLogin = async () => {
-        try {
-            await login(email, password)
-            navigation.navigate('Home')
+    const validateEmail = (email: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email.toLowerCase());
+    }
+
+    const handleLogin = () => {
+        if (!validateEmail(email)) {
+            Alert.alert('Ошибка', 'Неверный формат электронной почты.');
+            return;
         }
-        catch (error) {
-            console.error(error);
-        }
+
+        login(email, password)
+            .then(() => navigation.navigate('Home'))
+            .catch(error => Alert.alert('Ошибка', 'Не удалось войти. Попробуйте снова.'));
     }
 
     return (
@@ -55,9 +62,6 @@ export default function Login({navigation}: any) {
                 >
                     <Text style={styles.buttonText}>Login</Text>
                 </Pressable>
-                {/* <Pressable onPress={() => {navigation.navigate("ResetPassword")}}>
-                    <Text style={styles.link}>Forgot Password?</Text>
-                </Pressable> */}
                 <Pressable onPress={() => {navigation.navigate("Register")}}>
                     <Text style={styles.link}>No Account?</Text>
                 </Pressable>
